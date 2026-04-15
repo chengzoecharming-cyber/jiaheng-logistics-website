@@ -180,11 +180,20 @@ const KPIS = [
   { label: "客户投诉回复", value: "<24h", desc: "持续优化，提升服务感知" },
 ];
 
+const PHONE_CONTACTS = [
+  { role: "运营负责人", phone: "8263 1258" },
+  { role: "散货调度", phone: "2528 0588" },
+  { role: "集装箱调度", phone: "8263 1258" },
+  { role: "车队长", phone: "138-0000-0000" },
+  { role: "传真", phone: "2528 0577" },
+];
+
 export default function App() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [selectedService, setSelectedService] = useState<typeof SERVICES[0] | null>(null);
   const [wechatOpen, setWechatOpen] = useState(false);
+  const [phonesOpen, setPhonesOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -807,7 +816,7 @@ export default function App() {
                 <Button size="lg" className="rounded-full px-10 h-14 text-lg" onClick={() => setWechatOpen(true)}>
                   联系我们
                 </Button>
-                <Button variant="outline" size="lg" className="rounded-full px-10 h-14 text-lg bg-white">
+                <Button variant="outline" size="lg" className="rounded-full px-10 h-14 text-lg bg-white" onClick={() => setPhonesOpen(true)}>
                   <PhoneCall className="mr-2 w-5 h-5" /> 咨询电话
                 </Button>
               </div>
@@ -904,6 +913,40 @@ export default function App() {
               alt="微信二维码"
               className="w-56 h-56 rounded-2xl shadow-md object-cover bg-slate-100"
             />
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Phone Contacts Dialog */}
+      <Dialog open={phonesOpen} onOpenChange={setPhonesOpen}>
+        <DialogContent className="sm:max-w-[420px] w-[90vw] rounded-[2.5rem] p-0 overflow-hidden border-none shadow-2xl">
+          <DialogHeader className="pt-10 pb-4 text-center">
+            <DialogTitle className="text-2xl font-display font-bold">联系电话</DialogTitle>
+            <DialogDescription className="text-slate-500 px-6">
+              点击号码可直接拨打，工作时间随时为您服务
+            </DialogDescription>
+          </DialogHeader>
+          <div className="pb-10 px-6">
+            <div className="space-y-3">
+              {PHONE_CONTACTS.map((contact) => (
+                <a
+                  key={contact.role}
+                  href={`tel:${contact.phone.replace(/\s/g, '')}`}
+                  className="flex items-center justify-between p-4 rounded-2xl bg-slate-50 hover:bg-slate-100 transition-colors group"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm">
+                      <PhoneCall className="w-4 h-4 text-blue-600" />
+                    </div>
+                    <div>
+                      <p className="font-bold text-slate-900">{contact.role}</p>
+                      <p className="text-sm text-slate-500">{contact.phone}</p>
+                    </div>
+                  </div>
+                  <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-slate-900 transition-colors" />
+                </a>
+              ))}
+            </div>
           </div>
         </DialogContent>
       </Dialog>
