@@ -184,7 +184,7 @@ const PHONE_CONTACTS = [
   { role: "运营负责人", phone: "8263 1258" },
   { role: "散货调度", phone: "2528 0588" },
   { role: "集装箱调度", phone: "8263 1258" },
-  { role: "负责人", phone: "13928498835" },
+  { role: "负责人", name: "李小姐", phone: "13928498835" },
   { role: "传真", phone: "2528 0577" },
 ];
 
@@ -939,7 +939,9 @@ export default function App() {
                       <PhoneCall className="w-4 h-4 text-blue-600" />
                     </div>
                     <div>
-                      <p className="font-bold text-slate-900">{contact.role}</p>
+                      <p className="font-bold text-slate-900">
+                        {contact.name ? `${contact.role} · ${contact.name}` : contact.role}
+                      </p>
                       <p className="text-sm text-slate-500">{contact.phone}</p>
                     </div>
                   </div>
