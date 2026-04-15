@@ -831,8 +831,8 @@ export default function App() {
                 </div>
               </div>
               
-              <div className="flex flex-col">
-                <Accordion type="single" collapsible className="w-full" defaultValue="principles">
+              <div className="flex flex-col h-full">
+                <Accordion type="single" collapsible className="w-full flex-grow flex flex-col" defaultValue="principles">
                   <AccordionItem value="principles" className="border-white/10 bg-blue-600/5 rounded-[2rem] px-6 mb-6 overflow-hidden border">
                     <AccordionTrigger className="text-xl font-bold hover:no-underline flex items-center gap-2 py-6">
                       <ShieldAlert className="text-blue-500" /> 应急处置原则
