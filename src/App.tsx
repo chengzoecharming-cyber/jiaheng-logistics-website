@@ -190,6 +190,10 @@ export default function App() {
   const [selectedService, setSelectedService] = useState<typeof SERVICES[0] | null>(null);
   const [wechatOpen, setWechatOpen] = useState(false);
   const [phonesOpen, setPhonesOpen] = useState(false);
+  const [selectedManagementDetail, setSelectedManagementDetail] = useState<{
+    mod: typeof MANAGEMENT_MODULES[0];
+    detail: typeof MANAGEMENT_MODULES[0]['details'][0];
+  } | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -513,7 +517,11 @@ export default function App() {
                     </div>
                     <div className="lg:col-span-7 grid grid-cols-1 md:grid-cols-2 gap-8">
                       {mod.details.map((detail, idx) => (
-                        <Card key={idx} className="border-none shadow-sm bg-white rounded-[2rem] hover:shadow-md transition-shadow">
+                        <Card
+                          key={idx}
+                          className="border-none shadow-sm bg-white rounded-[2rem] hover:shadow-md transition-shadow cursor-pointer"
+                          onClick={() => setSelectedManagementDetail({ mod, detail })}
+                        >
                           <CardContent className="p-10">
                             <h4 className="text-xl font-bold text-slate-900 mb-4">{detail.label}</h4>
                             <p className="text-slate-500 leading-relaxed">{detail.value}</p>
@@ -525,6 +533,39 @@ export default function App() {
                 </TabsContent>
               ))}
             </Tabs>
+
+            {/* Management Detail Dialog */}
+            <Dialog open={!!selectedManagementDetail} onOpenChange={(open) => !open && setSelectedManagementDetail(null)}>
+              <DialogContent className="sm:max-w-[600px] w-[95vw] rounded-[2.5rem] p-0 overflow-hidden border-none shadow-2xl">
+                {selectedManagementDetail && (
+                  <div className="flex flex-col relative">
+                    <div className="p-12 bg-blue-50 text-blue-600 flex items-center justify-between">
+                      <DialogTitle className="text-[28px] font-display font-bold leading-tight">
+                        {selectedManagementDetail.detail.label}
+                      </DialogTitle>
+                    </div>
+                    <div className="p-12 bg-white">
+                      <DialogDescription className="text-slate-500 text-base leading-relaxed mb-8">
+                        {selectedManagementDetail.detail.value}
+                      </DialogDescription>
+                      <Button
+                        size="lg"
+                        className="rounded-full px-10 h-14 text-lg"
+                        render={
+                          <a
+                            href="https://www.notion.so/3417564444688014a094eee3ee6e08ad?source=copy_link"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          />
+                        }
+                      >
+                        阅读完整规范
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </DialogContent>
+            </Dialog>
           </div>
         </section>
 
