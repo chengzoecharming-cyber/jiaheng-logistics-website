@@ -267,7 +267,7 @@ export default function App() {
 
       <main>
         {/* Hero Section */}
-        <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden">
+        <section className="relative min-h-screen flex flex-col justify-center pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden">
           <div className="max-w-7xl mx-auto px-6 text-center relative z-10">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
