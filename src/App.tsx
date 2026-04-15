@@ -640,16 +640,17 @@ export default function App() {
                       {mod.details.map((detail, idx) => (
                         <Card
                           key={idx}
-                          className="border-none shadow-sm bg-white rounded-[2rem] hover:shadow-md transition-shadow cursor-pointer overflow-hidden group"
+                          className="border-none shadow-sm bg-white rounded-[2rem] hover:shadow-md transition-shadow cursor-pointer group"
                           onClick={() => setSelectedManagementDetail({ mod, detail })}
                         >
-                          <div className={`h-2 ${mod.color.split(' ')[0]}`} />
-                          <CardContent className="p-10">
-                            <div className={`w-12 h-12 rounded-xl ${mod.color} flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300`}>
-                              <CheckCircle2 className="w-6 h-6" />
+                          <CardContent className="p-8 flex items-start gap-5">
+                            <div className={`w-14 h-14 rounded-2xl ${mod.color} flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300`}>
+                              <CheckCircle2 className="w-7 h-7" />
                             </div>
-                            <h4 className="text-xl font-bold text-slate-900 mb-3">{detail.label}</h4>
-                            <p className="text-slate-500 leading-relaxed text-sm">{detail.value}</p>
+                            <div className="flex-1 min-w-0">
+                              <h4 className="text-lg font-bold text-slate-900 mb-2">{detail.label}</h4>
+                              <p className="text-slate-500 leading-relaxed text-sm">{detail.value}</p>
+                            </div>
                           </CardContent>
                         </Card>
                       ))}
