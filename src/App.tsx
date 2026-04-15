@@ -909,7 +909,7 @@ export default function App() {
           </DialogHeader>
           <div className="flex justify-center pb-10 px-6">
             <img
-              src="/wechat-qr.jpg"
+              src="./wechat-qr.jpg"
               alt="微信二维码"
               className="w-56 h-56 rounded-2xl shadow-md object-cover bg-slate-100"
             />
