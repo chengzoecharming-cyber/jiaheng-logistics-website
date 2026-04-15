@@ -184,6 +184,7 @@ export default function App() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [selectedService, setSelectedService] = useState<typeof SERVICES[0] | null>(null);
+  const [wechatOpen, setWechatOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -222,7 +223,7 @@ export default function App() {
                 {link.name}
               </a>
             ))}
-            <Button size="sm" className="rounded-full px-6">
+            <Button size="sm" className="rounded-full px-6" onClick={() => setWechatOpen(true)}>
               联系我们
             </Button>
           </div>
@@ -257,7 +258,7 @@ export default function App() {
                   {link.name}
                 </a>
               ))}
-              <Button size="lg" className="w-full rounded-xl mt-4">
+              <Button size="lg" className="w-full rounded-xl mt-4" onClick={() => setWechatOpen(true)}>
                 联系我们
               </Button>
             </div>
@@ -284,7 +285,7 @@ export default function App() {
                 深圳嘉亨物流有限公司，以标准化手册为基石，通过全生命周期管理与卓越的应急机制，为您的全球贸易保驾护航。
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <Button size="lg" className="rounded-full px-8 h-12 text-base">
+                <Button size="lg" className="rounded-full px-8 h-12 text-base" onClick={() => setWechatOpen(true)}>
                   立即咨询 <ArrowRight className="ml-2 w-4 h-4" />
                 </Button>
                 <Button
@@ -803,7 +804,7 @@ export default function App() {
                 联系我们的专业团队，获取定制化的物流解决方案。我们全天候为您提供支持。
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <Button size="lg" className="rounded-full px-10 h-14 text-lg">
+                <Button size="lg" className="rounded-full px-10 h-14 text-lg" onClick={() => setWechatOpen(true)}>
                   联系我们
                 </Button>
                 <Button variant="outline" size="lg" className="rounded-full px-10 h-14 text-lg bg-white">
@@ -887,6 +888,25 @@ export default function App() {
           </div>
         </div>
       </footer>
+
+      {/* WeChat QR Code Dialog */}
+      <Dialog open={wechatOpen} onOpenChange={setWechatOpen}>
+        <DialogContent className="sm:max-w-[360px] w-[90vw] rounded-[2.5rem] p-0 overflow-hidden border-none shadow-2xl text-center">
+          <DialogHeader className="pt-10 pb-2">
+            <DialogTitle className="text-2xl font-display font-bold">添加微信咨询</DialogTitle>
+            <DialogDescription className="text-slate-500 px-6">
+              扫描二维码添加嘉亨物流客服微信，获取定制化物流方案
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-center pb-10 px-6">
+            <img
+              src="/wechat-qr.jpg"
+              alt="微信二维码"
+              className="w-56 h-56 rounded-2xl shadow-md object-cover bg-slate-100"
+            />
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
