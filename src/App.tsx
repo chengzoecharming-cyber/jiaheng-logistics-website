@@ -181,11 +181,7 @@ const KPIS = [
 ];
 
 const PHONE_CONTACTS = [
-  { role: "运营负责人", phone: "8263 1258" },
-  { role: "散货调度", phone: "2528 0588" },
-  { role: "集装箱调度", phone: "8263 1258" },
   { role: "负责人", name: "李小姐", phone: "13928498835" },
-  { role: "传真", phone: "2528 0577" },
 ];
 
 export default function App() {
