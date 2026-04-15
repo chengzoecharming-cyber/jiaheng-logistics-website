@@ -287,7 +287,18 @@ export default function App() {
                 <Button size="lg" className="rounded-full px-8 h-12 text-base">
                   立即咨询 <ArrowRight className="ml-2 w-4 h-4" />
                 </Button>
-                <Button variant="outline" size="lg" className="rounded-full px-8 h-12 text-base">
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="rounded-full px-8 h-12 text-base"
+                  render={
+                    <a
+                      href="https://www.notion.so/34175644446880b7bae9c9a63d6fedf8?source=copy_link"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    />
+                  }
+                >
                   了解运营手册
                 </Button>
               </div>
@@ -480,7 +491,19 @@ export default function App() {
                       <p className="text-slate-500 text-lg md:text-xl leading-relaxed mb-12">
                         {mod.content}
                       </p>
-                      <Button size="lg" className="rounded-full px-10 h-14 text-lg">阅读完整规范</Button>
+                      <Button
+                        size="lg"
+                        className="rounded-full px-10 h-14 text-lg"
+                        render={
+                          <a
+                            href="https://www.notion.so/3417564444688014a094eee3ee6e08ad?source=copy_link"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          />
+                        }
+                      >
+                        阅读完整规范
+                      </Button>
                     </div>
                     <div className="lg:col-span-7 grid grid-cols-1 md:grid-cols-2 gap-8">
                       {mod.details.map((detail, idx) => (
@@ -566,6 +589,21 @@ export default function App() {
               <p className="max-w-2xl mx-auto text-slate-400 text-lg">
                 嘉亨物流建立了一套严谨的应急组织体系，确保在交通事故、车辆故障、货损货差等突发状况下，实现损失最小化与服务连续性。
               </p>
+              <div className="mt-8 flex justify-center">
+                <Button
+                  variant="outline"
+                  className="rounded-full border-white/20 bg-transparent text-white hover:bg-white/10 hover:text-white px-8 h-12 text-base"
+                  render={
+                    <a
+                      href="https://www.notion.so/341756444468803cb6f3c4858cd4d55f?source=copy_link"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    />
+                  }
+                >
+                  查看完整应急预案
+                </Button>
+              </div>
             </div>
 
             {/* Response Levels Grid */}
