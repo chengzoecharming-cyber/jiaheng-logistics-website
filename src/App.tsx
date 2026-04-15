@@ -673,8 +673,14 @@ export default function App() {
                     <div className="p-12 bg-white">
                       <ul className="space-y-4">
                         {((selectedManagementDetail.detail as any).bullets || [selectedManagementDetail.detail.value]).map((item: string, i: number) => (
-                          <li key={i} className="flex gap-3 text-slate-600 text-base leading-relaxed">
-                            <span className={`mt-1.5 w-2 h-2 rounded-full flex-shrink-0 ${selectedManagementDetail.mod.color.split(' ')[1].replace('text-', 'bg-')}`} />
+                           <li key={i} className="flex gap-3 text-slate-600 text-base leading-relaxed">
+                            <span className={cn(
+                              "mt-1.5 w-2 h-2 rounded-full flex-shrink-0",
+                              selectedManagementDetail.mod.id === "mod1" && "bg-blue-600",
+                              selectedManagementDetail.mod.id === "mod2" && "bg-cyan-600",
+                              selectedManagementDetail.mod.id === "mod3" && "bg-orange-600",
+                              selectedManagementDetail.mod.id === "mod4" && "bg-purple-600"
+                            )} />
                             <span>{item}</span>
                           </li>
                         ))}
