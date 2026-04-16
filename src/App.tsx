@@ -424,7 +424,7 @@ export default function App() {
                   className="rounded-full px-8 h-12 text-base"
                   render={
                     <a
-                      href="https://www.notion.so/34175644446880b7bae9c9a63d6fedf8?source=copy_link"
+                      href="https://tqafg14sb42.feishu.cn/wiki/MMdGwmNtViwCVUkywtkcHZlBnIb"
                       target="_blank"
                       rel="noopener noreferrer"
                     />
@@ -627,7 +627,7 @@ export default function App() {
                         className="rounded-full px-10 h-14 text-lg"
                         render={
                           <a
-                            href="https://www.notion.so/3417564444688014a094eee3ee6e08ad?source=copy_link"
+                            href="https://tqafg14sb42.feishu.cn/wiki/PCtwwYi9Vi8XDSkw78ec1TqMnng"
                             target="_blank"
                             rel="noopener noreferrer"
                           />
@@ -765,7 +765,7 @@ export default function App() {
                   className="rounded-full border-white/20 bg-transparent text-white hover:bg-white/10 hover:text-white px-8 h-12 text-base"
                   render={
                     <a
-                      href="https://www.notion.so/341756444468803cb6f3c4858cd4d55f?source=copy_link"
+                      href="https://tqafg14sb42.feishu.cn/wiki/Dvnlw6pcoimZPZkTnwXcfeJ3nKh"
                       target="_blank"
                       rel="noopener noreferrer"
                     />
