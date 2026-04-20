@@ -76,21 +76,38 @@ const BASE_PASSWORD = "jiaheng";
 const ADMIN_PASSWORD = "admin123";
 const SESSION_KEY = "jh_auth_verified";
 const PASSWORD_SUFFIX_KEY = "jh_password_suffix";
+const CUSTOM_PASSWORD_KEY = "jh_custom_password";
 
 function generatePasswordSuffix(): string {
   return Math.floor(1000 + Math.random() * 9000).toString();
 }
 
 function getCurrentPassword(): string {
-  const suffix = sessionStorage.getItem(PASSWORD_SUFFIX_KEY) || generatePasswordSuffix();
-  sessionStorage.setItem(PASSWORD_SUFFIX_KEY, suffix);
+  const suffix = localStorage.getItem(PASSWORD_SUFFIX_KEY) || generatePasswordSuffix();
+  localStorage.setItem(PASSWORD_SUFFIX_KEY, suffix);
   return BASE_PASSWORD + suffix;
 }
 
 function regeneratePassword(): string {
   const newSuffix = generatePasswordSuffix();
-  sessionStorage.setItem(PASSWORD_SUFFIX_KEY, newSuffix);
+  localStorage.setItem(PASSWORD_SUFFIX_KEY, newSuffix);
   return BASE_PASSWORD + newSuffix;
+}
+
+function verifyPassword(input: string): boolean {
+  // 优先检查自定义密码（跨设备共享）
+  const customPassword = localStorage.getItem(CUSTOM_PASSWORD_KEY);
+  if (customPassword && input === customPassword) {
+    return true;
+  }
+  
+  // 检查自动生成的密码（同一浏览器共享）
+  const currentPassword = getCurrentPassword();
+  if (input === currentPassword) {
+    return true;
+  }
+  
+  return false;
 }
 
 interface AdminPanelProps {
@@ -100,7 +117,10 @@ interface AdminPanelProps {
 function AdminPanel({ onClose }: AdminPanelProps) {
   const [adminPassword, setAdminPassword] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [activeTab, setActiveTab] = useState<"auto" | "custom">("auto");
   const [currentPassword, setCurrentPassword] = useState("");
+  const [customPassword, setCustomPassword] = useState("");
+  const [savedCustomPassword, setSavedCustomPassword] = useState(localStorage.getItem(CUSTOM_PASSWORD_KEY) || "");
   const [copied, setCopied] = useState(false);
 
   const handleAdminLogin = () => {
@@ -116,10 +136,23 @@ function AdminPanel({ onClose }: AdminPanelProps) {
     setCopied(false);
   };
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(currentPassword);
+  const handleCopy = (text: string) => {
+    navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleSaveCustomPassword = () => {
+    if (customPassword.trim()) {
+      localStorage.setItem(CUSTOM_PASSWORD_KEY, customPassword.trim());
+      setSavedCustomPassword(customPassword.trim());
+      setCustomPassword("");
+    }
+  };
+
+  const handleClearCustomPassword = () => {
+    localStorage.removeItem(CUSTOM_PASSWORD_KEY);
+    setSavedCustomPassword("");
   };
 
   return (
@@ -134,7 +167,7 @@ function AdminPanel({ onClose }: AdminPanelProps) {
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.9, y: 20 }}
         transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-        className="bg-white border border-slate-200 rounded-[2.5rem] p-10 w-full max-w-md relative shadow-2xl shadow-slate-200/50"
+        className="bg-white border border-slate-200 rounded-[2.5rem] p-10 w-full max-w-md relative shadow-2xl shadow-slate-200/50 max-h-[90vh] overflow-y-auto"
       >
         <button
           onClick={onClose}
@@ -172,53 +205,150 @@ function AdminPanel({ onClose }: AdminPanelProps) {
             </div>
           </div>
         ) : (
-          <div className="space-y-8 pt-4">
+          <div className="space-y-6 pt-4">
             <div className="text-center">
               <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-6">
                 <CheckCircle2 className="w-7 h-7 text-green-500" />
               </div>
-              <h3 className="text-xl font-medium text-slate-900 mb-2">当前访问密码</h3>
-              <p className="text-slate-500 text-sm">请将此密码发送给甲方</p>
+              <h3 className="text-xl font-medium text-slate-900 mb-2">访问密码管理</h3>
+              <p className="text-slate-500 text-sm">选择密码类型并发送给甲方</p>
             </div>
 
-            <div className="bg-slate-50 rounded-3xl p-8 text-center border border-slate-100">
-              <p className="text-3xl font-mono font-medium text-slate-900 tracking-[0.2em] mb-3">
-                {currentPassword}
-              </p>
-              <p className="text-xs text-slate-400 tracking-wide">基础密码 + 4位随机后缀</p>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
-              <Button
-                onClick={handleCopy}
-                variant="outline"
-                className="rounded-full border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 h-12"
-              >
-                {copied ? (
-                  <>
-                    <CheckCircle2 className="w-4 h-4 mr-2 text-green-500" />
-                    已复制
-                  </>
-                ) : (
-                  <>
-                    <Copy className="w-4 h-4 mr-2" />
-                    复制密码
-                  </>
+            {/* 标签切换 */}
+            <div className="flex bg-slate-100 rounded-full p-1">
+              <button
+                onClick={() => setActiveTab("auto")}
+                className={cn(
+                  "flex-1 py-2.5 text-sm font-medium rounded-full transition-all",
+                  activeTab === "auto" 
+                    ? "bg-white text-slate-900 shadow-sm" 
+                    : "text-slate-500 hover:text-slate-700"
                 )}
-              </Button>
-              <Button
-                onClick={handleGenerateNew}
-                variant="outline"
-                className="rounded-full border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 h-12"
               >
-                <RefreshCw className="w-4 h-4 mr-2" />
-                生成新密码
-              </Button>
+                自动生成
+              </button>
+              <button
+                onClick={() => setActiveTab("custom")}
+                className={cn(
+                  "flex-1 py-2.5 text-sm font-medium rounded-full transition-all",
+                  activeTab === "custom" 
+                    ? "bg-white text-slate-900 shadow-sm" 
+                    : "text-slate-500 hover:text-slate-700"
+                )}
+              >
+                自定义密码
+              </button>
             </div>
 
-            <div className="pt-2">
+            {activeTab === "auto" ? (
+              <div className="space-y-6">
+                <div className="bg-slate-50 rounded-3xl p-8 text-center border border-slate-100">
+                  <p className="text-2xl font-mono font-medium text-slate-900 tracking-[0.15em] mb-3">
+                    {currentPassword}
+                  </p>
+                  <p className="text-xs text-slate-400 tracking-wide">基础密码 + 4位随机后缀</p>
+                  <p className="text-xs text-slate-400 mt-2">仅当前浏览器可用</p>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <Button
+                    onClick={() => handleCopy(currentPassword)}
+                    variant="outline"
+                    className="rounded-full border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 h-12"
+                  >
+                    {copied ? (
+                      <>
+                        <CheckCircle2 className="w-4 h-4 mr-2 text-green-500" />
+                        已复制
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-4 h-4 mr-2" />
+                        复制密码
+                      </>
+                    )}
+                  </Button>
+                  <Button
+                    onClick={handleGenerateNew}
+                    variant="outline"
+                    className="rounded-full border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 h-12"
+                  >
+                    <RefreshCw className="w-4 h-4 mr-2" />
+                    重新生成
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-6">
+                {savedCustomPassword ? (
+                  <div className="space-y-6">
+                    <div className="bg-green-50 rounded-3xl p-8 text-center border border-green-100">
+                      <p className="text-xs text-green-600 font-medium mb-2 tracking-wide">当前自定义密码</p>
+                      <p className="text-2xl font-mono font-medium text-slate-900 tracking-[0.15em] mb-3">
+                        {savedCustomPassword}
+                      </p>
+                      <p className="text-xs text-slate-400">所有设备均可使用此密码</p>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3">
+                      <Button
+                        onClick={() => handleCopy(savedCustomPassword)}
+                        variant="outline"
+                        className="rounded-full border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 h-12"
+                      >
+                        {copied ? (
+                          <>
+                            <CheckCircle2 className="w-4 h-4 mr-2 text-green-500" />
+                            已复制
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-4 h-4 mr-2" />
+                            复制密码
+                          </>
+                        )}
+                      </Button>
+                      <Button
+                        onClick={handleClearCustomPassword}
+                        variant="outline"
+                        className="rounded-full border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 h-12"
+                      >
+                        清除密码
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100">
+                      <p className="text-sm text-slate-500 mb-4 text-center">
+                        设置自定义密码后，甲方可在任何设备上使用
+                      </p>
+                      <Input
+                        type="text"
+                        placeholder="输入自定义密码（如：jiaheng2024）"
+                        value={customPassword}
+                        onChange={(e) => setCustomPassword(e.target.value)}
+                        onKeyDown={(e) => e.key === "Enter" && handleSaveCustomPassword()}
+                        className="bg-white border-slate-200 text-slate-900 placeholder:text-slate-400 rounded-2xl h-12 text-center mb-3"
+                      />
+                      <Button
+                        onClick={handleSaveCustomPassword}
+                        disabled={!customPassword.trim()}
+                        className="w-full bg-slate-900 text-white hover:bg-slate-800 rounded-full h-12 text-base font-medium disabled:opacity-50"
+                      >
+                        设置密码
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            <div className="pt-4 border-t border-slate-100">
               <p className="text-xs text-slate-400 text-center leading-relaxed">
-                生成新密码后，旧密码将立即失效
+                {activeTab === "auto" 
+                  ? "提示：自动生成的密码仅在当前浏览器有效" 
+                  : "提示：自定义密码可在所有设备上使用"}
               </p>
             </div>
           </div>
@@ -252,8 +382,7 @@ export default function PasswordGate({ onSuccess }: PasswordGateProps) {
   }, []);
 
   const handleSubmit = useCallback(() => {
-    const currentPassword = getCurrentPassword();
-    if (password === currentPassword) {
+    if (verifyPassword(password)) {
       sessionStorage.setItem(SESSION_KEY, "true");
       setError(false);
       onSuccess();
