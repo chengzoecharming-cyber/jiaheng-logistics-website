@@ -82,6 +82,14 @@ function generatePasswordSuffix(): string {
   return Math.floor(1000 + Math.random() * 9000).toString();
 }
 
+// 获取日期密码（所有设备通用，基于当前日期）
+function getDatePassword(): string {
+  const now = new Date();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  return `${BASE_PASSWORD}${month}${day}`;
+}
+
 function getCurrentPassword(): string {
   const suffix = localStorage.getItem(PASSWORD_SUFFIX_KEY) || generatePasswordSuffix();
   localStorage.setItem(PASSWORD_SUFFIX_KEY, suffix);
@@ -95,13 +103,18 @@ function regeneratePassword(): string {
 }
 
 function verifyPassword(input: string): boolean {
-  // 优先检查自定义密码（跨设备共享）
+  // 1. 检查自定义密码（如果设置了）
   const customPassword = localStorage.getItem(CUSTOM_PASSWORD_KEY);
   if (customPassword && input === customPassword) {
     return true;
   }
   
-  // 检查自动生成的密码（同一浏览器共享）
+  // 2. 检查日期密码（所有设备通用）
+  if (input === getDatePassword()) {
+    return true;
+  }
+  
+  // 3. 检查本地自动生成的密码（当前浏览器）
   const currentPassword = getCurrentPassword();
   if (input === currentPassword) {
     return true;
@@ -117,8 +130,8 @@ interface AdminPanelProps {
 function AdminPanel({ onClose }: AdminPanelProps) {
   const [adminPassword, setAdminPassword] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [activeTab, setActiveTab] = useState<"auto" | "custom">("auto");
-  const [currentPassword, setCurrentPassword] = useState("");
+  const [activeTab, setActiveTab] = useState<"date" | "custom">("date");
+  const [datePassword, setDatePassword] = useState(getDatePassword());
   const [customPassword, setCustomPassword] = useState("");
   const [savedCustomPassword, setSavedCustomPassword] = useState(localStorage.getItem(CUSTOM_PASSWORD_KEY) || "");
   const [copied, setCopied] = useState(false);
@@ -126,14 +139,8 @@ function AdminPanel({ onClose }: AdminPanelProps) {
   const handleAdminLogin = () => {
     if (adminPassword === ADMIN_PASSWORD) {
       setIsAuthenticated(true);
-      setCurrentPassword(getCurrentPassword());
+      setDatePassword(getDatePassword());
     }
-  };
-
-  const handleGenerateNew = () => {
-    const newPassword = regeneratePassword();
-    setCurrentPassword(newPassword);
-    setCopied(false);
   };
 
   const handleCopy = (text: string) => {
@@ -217,15 +224,15 @@ function AdminPanel({ onClose }: AdminPanelProps) {
             {/* 标签切换 */}
             <div className="flex bg-slate-100 rounded-full p-1">
               <button
-                onClick={() => setActiveTab("auto")}
+                onClick={() => setActiveTab("date")}
                 className={cn(
                   "flex-1 py-2.5 text-sm font-medium rounded-full transition-all",
-                  activeTab === "auto" 
+                  activeTab === "date" 
                     ? "bg-white text-slate-900 shadow-sm" 
                     : "text-slate-500 hover:text-slate-700"
                 )}
               >
-                自动生成
+                每日密码
               </button>
               <button
                 onClick={() => setActiveTab("custom")}
@@ -240,43 +247,33 @@ function AdminPanel({ onClose }: AdminPanelProps) {
               </button>
             </div>
 
-            {activeTab === "auto" ? (
+            {activeTab === "date" ? (
               <div className="space-y-6">
-                <div className="bg-slate-50 rounded-3xl p-8 text-center border border-slate-100">
+                <div className="bg-blue-50 rounded-3xl p-8 text-center border border-blue-100">
+                  <p className="text-xs text-blue-600 font-medium mb-2 tracking-wide">今日通用密码（所有设备可用）</p>
                   <p className="text-2xl font-mono font-medium text-slate-900 tracking-[0.15em] mb-3">
-                    {currentPassword}
+                    {datePassword}
                   </p>
-                  <p className="text-xs text-slate-400 tracking-wide">基础密码 + 4位随机后缀</p>
-                  <p className="text-xs text-slate-400 mt-2">仅当前浏览器可用</p>
+                  <p className="text-xs text-slate-400">基于当前日期自动生成</p>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3">
-                  <Button
-                    onClick={() => handleCopy(currentPassword)}
-                    variant="outline"
-                    className="rounded-full border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 h-12"
-                  >
-                    {copied ? (
-                      <>
-                        <CheckCircle2 className="w-4 h-4 mr-2 text-green-500" />
-                        已复制
-                      </>
-                    ) : (
-                      <>
-                        <Copy className="w-4 h-4 mr-2" />
-                        复制密码
-                      </>
-                    )}
-                  </Button>
-                  <Button
-                    onClick={handleGenerateNew}
-                    variant="outline"
-                    className="rounded-full border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 h-12"
-                  >
-                    <RefreshCw className="w-4 h-4 mr-2" />
-                    重新生成
-                  </Button>
-                </div>
+                <Button
+                  onClick={() => handleCopy(datePassword)}
+                  variant="outline"
+                  className="w-full rounded-full border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 h-12"
+                >
+                  {copied ? (
+                    <>
+                      <CheckCircle2 className="w-4 h-4 mr-2 text-green-500" />
+                      已复制
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-4 h-4 mr-2" />
+                      复制密码
+                    </>
+                  )}
+                </Button>
               </div>
             ) : (
               <div className="space-y-6">
@@ -346,9 +343,9 @@ function AdminPanel({ onClose }: AdminPanelProps) {
 
             <div className="pt-4 border-t border-slate-100">
               <p className="text-xs text-slate-400 text-center leading-relaxed">
-                {activeTab === "auto" 
-                  ? "提示：自动生成的密码仅在当前浏览器有效" 
-                  : "提示：自定义密码可在所有设备上使用"}
+                {activeTab === "date" 
+                  ? "提示：每日密码基于日期生成，所有设备均可使用" 
+                  : "提示：自定义密码仅在当前浏览器所在设备上存储"}
               </p>
             </div>
           </div>
