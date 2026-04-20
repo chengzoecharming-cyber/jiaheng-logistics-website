@@ -73,11 +73,29 @@ function FloatingCircles() {
 }
 
 // 预定义100个一次性密码（所有设备通用）
-// 要修改密码列表，直接编辑此数组
-const PASSWORD_LIST = Array.from({ length: 100 }, (_, i) => {
-  const num = String(i + 1).padStart(3, '0');
-  return `jiaheng${num}`;
-});
+// 100个不重复的随机三位数，完全无规律
+const PASSWORD_LIST = [
+  "jiaheng285", "jiaheng491", "jiaheng419", "jiaheng362", "jiaheng961",
+  "jiaheng997", "jiaheng135", "jiaheng693", "jiaheng289", "jiaheng426",
+  "jiaheng690", "jiaheng100", "jiaheng549", "jiaheng149", "jiaheng790",
+  "jiaheng721", "jiaheng920", "jiaheng326", "jiaheng924", "jiaheng175",
+  "jiaheng741", "jiaheng884", "jiaheng061", "jiaheng244", "jiaheng383",
+  "jiaheng803", "jiaheng403", "jiaheng852", "jiaheng835", "jiaheng640",
+  "jiaheng243", "jiaheng204", "jiaheng664", "jiaheng247", "jiaheng592",
+  "jiaheng593", "jiaheng877", "jiaheng851", "jiaheng477", "jiaheng817",
+  "jiaheng071", "jiaheng395", "jiaheng397", "jiaheng558", "jiaheng173",
+  "jiaheng003", "jiaheng252", "jiaheng513", "jiaheng753", "jiaheng728",
+  "jiaheng672", "jiaheng742", "jiaheng478", "jiaheng143", "jiaheng762",
+  "jiaheng253", "jiaheng390", "jiaheng965", "jiaheng335", "jiaheng358",
+  "jiaheng052", "jiaheng651", "jiaheng440", "jiaheng333", "jiaheng839",
+  "jiaheng508", "jiaheng448", "jiaheng578", "jiaheng438", "jiaheng581",
+  "jiaheng409", "jiaheng121", "jiaheng131", "jiaheng011", "jiaheng466",
+  "jiaheng002", "jiaheng242", "jiaheng618", "jiaheng480", "jiaheng583",
+  "jiaheng073", "jiaheng273", "jiaheng327", "jiaheng257", "jiaheng144",
+  "jiaheng868", "jiaheng212", "jiaheng991", "jiaheng834", "jiaheng474",
+  "jiaheng124", "jiaheng081", "jiaheng823", "jiaheng782", "jiaheng698",
+  "jiaheng667", "jiaheng060", "jiaheng571", "jiaheng757", "jiaheng501",
+];
 
 const ADMIN_PASSWORD = "admin123";
 const SESSION_KEY = "jh_auth_verified";
