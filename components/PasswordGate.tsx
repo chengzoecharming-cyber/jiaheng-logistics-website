@@ -5,35 +5,39 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
+// 彩色漂浮圆圈组件
 interface FloatingCircleProps {
   size: number;
   x: number;
+  y: number;
+  color: string;
   delay: number;
   duration: number;
-  opacity: number;
   key?: React.Key;
 }
 
-function FloatingCircle({ size, x, delay, duration, opacity }: FloatingCircleProps) {
+function FloatingCircle({ size, x, y, color, delay, duration }: FloatingCircleProps) {
   return (
     <motion.div
-      className="absolute rounded-full pointer-events-none"
+      className="absolute rounded-full pointer-events-none blur-sm"
       style={{
         width: size,
         height: size,
         left: `${x}%`,
-        background: `radial-gradient(circle, rgba(99,102,241,${opacity}) 0%, rgba(99,102,241,0) 70%)`,
+        top: `${y}%`,
+        background: color,
+        opacity: 0.15,
       }}
-      initial={{ y: "100vh", opacity: 0 }}
       animate={{
-        y: "-20vh",
-        opacity: [0, opacity, opacity, 0],
+        x: [0, 30, -20, 0],
+        y: [0, -40, 20, 0],
+        scale: [1, 1.1, 0.9, 1],
       }}
       transition={{
         duration,
         delay,
         repeat: Infinity,
-        ease: "linear",
+        ease: "easeInOut",
       }}
     />
   );
@@ -41,16 +45,14 @@ function FloatingCircle({ size, x, delay, duration, opacity }: FloatingCirclePro
 
 function FloatingCircles() {
   const circles = [
-    { size: 60, x: 10, delay: 0, duration: 15, opacity: 0.15 },
-    { size: 40, x: 25, delay: 3, duration: 12, opacity: 0.1 },
-    { size: 80, x: 40, delay: 1.5, duration: 18, opacity: 0.08 },
-    { size: 30, x: 55, delay: 5, duration: 10, opacity: 0.12 },
-    { size: 50, x: 70, delay: 2, duration: 14, opacity: 0.1 },
-    { size: 70, x: 85, delay: 4, duration: 16, opacity: 0.07 },
-    { size: 45, x: 15, delay: 7, duration: 13, opacity: 0.09 },
-    { size: 35, x: 60, delay: 6, duration: 11, opacity: 0.11 },
-    { size: 55, x: 90, delay: 8, duration: 17, opacity: 0.06 },
-    { size: 65, x: 5, delay: 10, duration: 19, opacity: 0.08 },
+    { size: 180, x: 10, y: 15, color: "linear-gradient(135deg, #ff6b9d, #c44569)", delay: 0, duration: 20 },
+    { size: 140, x: 75, y: 20, color: "linear-gradient(135deg, #4facfe, #00f2fe)", delay: 2, duration: 18 },
+    { size: 200, x: 85, y: 60, color: "linear-gradient(135deg, #a18cd1, #fbc2eb)", delay: 4, duration: 22 },
+    { size: 160, x: 5, y: 70, color: "linear-gradient(135deg, #fa709a, #fee140)", delay: 1, duration: 19 },
+    { size: 120, x: 50, y: 10, color: "linear-gradient(135deg, #30cfd0, #330867)", delay: 3, duration: 17 },
+    { size: 100, x: 25, y: 80, color: "linear-gradient(135deg, #ff9a9e, #fecfef)", delay: 5, duration: 21 },
+    { size: 150, x: 65, y: 75, color: "linear-gradient(135deg, #667eea, #764ba2)", delay: 2.5, duration: 23 },
+    { size: 90, x: 40, y: 40, color: "linear-gradient(135deg, #f093fb, #f5576c)", delay: 1.5, duration: 16 },
   ];
 
   return (
@@ -60,9 +62,10 @@ function FloatingCircles() {
           key={i}
           size={circle.size}
           x={circle.x}
+          y={circle.y}
+          color={circle.color}
           delay={circle.delay}
           duration={circle.duration}
-          opacity={circle.opacity}
         />
       ))}
     </div>
@@ -121,25 +124,35 @@ function AdminPanel({ onClose }: AdminPanelProps) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.95 }}
-      className="absolute inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-white/90 backdrop-blur-xl p-4"
     >
-      <div className="bg-slate-900 border border-slate-700 rounded-3xl p-8 w-full max-w-md relative">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.9, y: 20 }}
+        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+        className="bg-white border border-slate-200 rounded-[2.5rem] p-10 w-full max-w-md relative shadow-2xl shadow-slate-200/50"
+      >
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors"
+          className="absolute top-6 right-6 w-8 h-8 flex items-center justify-center rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-all"
         >
-          ✕
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M1 1L13 13M13 1L1 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+          </svg>
         </button>
 
         {!isAuthenticated ? (
-          <div className="space-y-6">
+          <div className="space-y-8 pt-4">
             <div className="text-center">
-              <Lock className="w-10 h-10 text-slate-400 mx-auto mb-4" />
-              <h3 className="text-xl font-bold text-white mb-2">管理员登录</h3>
-              <p className="text-slate-400 text-sm">请输入管理员密码以查看当前密码</p>
+              <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Lock className="w-7 h-7 text-slate-400" />
+              </div>
+              <h3 className="text-xl font-medium text-slate-900 mb-2">管理员验证</h3>
+              <p className="text-slate-500 text-sm">请输入密码以获取访问凭证</p>
             </div>
             <div className="space-y-4">
               <Input
@@ -148,40 +161,42 @@ function AdminPanel({ onClose }: AdminPanelProps) {
                 value={adminPassword}
                 onChange={(e) => setAdminPassword(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleAdminLogin()}
-                className="bg-slate-800 border-slate-600 text-white placeholder:text-slate-500"
+                className="bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 rounded-2xl h-12 text-center"
               />
               <Button
                 onClick={handleAdminLogin}
-                className="w-full bg-white text-slate-900 hover:bg-slate-200 rounded-full h-11 font-medium"
+                className="w-full bg-slate-900 text-white hover:bg-slate-800 rounded-full h-12 text-base font-medium"
               >
-                进入管理面板
+                验证身份
               </Button>
             </div>
           </div>
         ) : (
-          <div className="space-y-6">
+          <div className="space-y-8 pt-4">
             <div className="text-center">
-              <CheckCircle2 className="w-10 h-10 text-green-400 mx-auto mb-4" />
-              <h3 className="text-xl font-bold text-white mb-2">当前密码</h3>
-              <p className="text-slate-400 text-sm">将此密码发送给甲方</p>
+              <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                <CheckCircle2 className="w-7 h-7 text-green-500" />
+              </div>
+              <h3 className="text-xl font-medium text-slate-900 mb-2">当前访问密码</h3>
+              <p className="text-slate-500 text-sm">请将此密码发送给甲方</p>
             </div>
 
-            <div className="bg-slate-800 rounded-2xl p-6 text-center border border-slate-700">
-              <p className="text-3xl font-mono font-bold text-white tracking-wider mb-2">
+            <div className="bg-slate-50 rounded-3xl p-8 text-center border border-slate-100">
+              <p className="text-3xl font-mono font-medium text-slate-900 tracking-[0.2em] mb-3">
                 {currentPassword}
               </p>
-              <p className="text-xs text-slate-500">基础密码 + 4位随机后缀</p>
+              <p className="text-xs text-slate-400 tracking-wide">基础密码 + 4位随机后缀</p>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <Button
                 onClick={handleCopy}
                 variant="outline"
-                className="rounded-full border-slate-600 text-white hover:bg-slate-800 h-11"
+                className="rounded-full border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 h-12"
               >
                 {copied ? (
                   <>
-                    <CheckCircle2 className="w-4 h-4 mr-2 text-green-400" />
+                    <CheckCircle2 className="w-4 h-4 mr-2 text-green-500" />
                     已复制
                   </>
                 ) : (
@@ -194,21 +209,21 @@ function AdminPanel({ onClose }: AdminPanelProps) {
               <Button
                 onClick={handleGenerateNew}
                 variant="outline"
-                className="rounded-full border-slate-600 text-white hover:bg-slate-800 h-11"
+                className="rounded-full border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 h-12"
               >
                 <RefreshCw className="w-4 h-4 mr-2" />
                 生成新密码
               </Button>
             </div>
 
-            <div className="pt-4 border-t border-slate-700">
-              <p className="text-xs text-slate-500 text-center">
-                提示：生成新密码后，旧密码将立即失效
+            <div className="pt-2">
+              <p className="text-xs text-slate-400 text-center leading-relaxed">
+                生成新密码后，旧密码将立即失效
               </p>
             </div>
           </div>
         )}
-      </div>
+      </motion.div>
     </motion.div>
   );
 }
@@ -225,7 +240,6 @@ export default function PasswordGate({ onSuccess }: PasswordGateProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    // 键盘快捷键：支持 Cmd/Ctrl + Shift + A
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key.toLowerCase() === "a") {
         e.preventDefault();
@@ -261,7 +275,7 @@ export default function PasswordGate({ onSuccess }: PasswordGateProps) {
   }, []);
 
   return (
-    <div className="fixed inset-0 bg-[#f5f5f7] flex items-center justify-center overflow-hidden">
+    <div className="fixed inset-0 bg-white flex items-center justify-center overflow-hidden">
       <FloatingCircles />
 
       <AnimatePresence>
@@ -271,47 +285,48 @@ export default function PasswordGate({ onSuccess }: PasswordGateProps) {
       </AnimatePresence>
 
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-        className="relative z-10 w-full max-w-sm px-6"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="relative z-10 w-full max-w-sm px-8"
       >
-        {/* Logo */}
-        <div className="flex flex-col items-center mb-12">
+        {/* Logo 区域 */}
+        <div className="flex flex-col items-center mb-16">
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.2, duration: 0.5 }}
+            transition={{ delay: 0.2, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             onClick={handleLogoTripleClick}
-            className="w-24 h-24 bg-white rounded-[2rem] flex items-center justify-center mb-8 shadow-2xl shadow-slate-900/10 cursor-pointer select-none"
-            title="三击打开管理员面板"
+            className="w-28 h-28 bg-white rounded-full flex items-center justify-center mb-10 shadow-[0_8px_60px_-12px_rgba(0,0,0,0.15)] cursor-pointer select-none ring-1 ring-slate-100"
           >
-            <Container className="w-12 h-12 text-slate-900" />
+            <Container className="w-14 h-14 text-slate-800" strokeWidth={1.5} />
           </motion.div>
+          
           <motion.h1
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
-            className="text-3xl font-display font-bold text-slate-900 text-center tracking-tight"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4, duration: 0.5 }}
+            className="text-[28px] font-light text-slate-900 text-center tracking-wide"
           >
-            嘉亨物流
+            登录获取嘉亨物流服务
           </motion.h1>
+          
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-            className="text-slate-500 text-sm mt-2 text-center"
+            transition={{ delay: 0.6 }}
+            className="text-slate-400 text-sm mt-3 text-center font-light tracking-wide"
           >
-            请输入密码以访问网站
+            请输入访问密码
           </motion.p>
         </div>
 
-        {/* Password Input */}
+        {/* 密码输入区域 */}
         <motion.div
-          initial={{ opacity: 0, y: 10 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-          className="space-y-4"
+          transition={{ delay: 0.7, duration: 0.5 }}
+          className="space-y-6"
         >
           <div className="relative">
             <Input
@@ -325,15 +340,15 @@ export default function PasswordGate({ onSuccess }: PasswordGateProps) {
               }}
               onKeyDown={handleKeyDown}
               className={cn(
-                "w-full bg-white border-0 border-b-2 rounded-none px-4 py-4 text-lg text-slate-900 placeholder:text-slate-400 focus-visible:ring-0 focus-visible:border-slate-900 transition-colors text-center tracking-widest",
-                error ? "border-red-500" : "border-slate-300"
+                "w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-lg text-slate-900 placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-slate-200 focus-visible:border-slate-300 transition-all text-center tracking-[0.15em] h-14",
+                error && "border-red-300 focus-visible:ring-red-100 focus-visible:border-red-300"
               )}
               autoFocus
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+              className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
             >
               {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
             </button>
@@ -342,30 +357,30 @@ export default function PasswordGate({ onSuccess }: PasswordGateProps) {
           <AnimatePresence>
             {error && (
               <motion.p
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                className="text-red-500 text-sm text-center"
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                className="text-red-500 text-sm text-center font-light"
               >
-                密码错误，请重试
+                密码错误，请检查后重试
               </motion.p>
             )}
           </AnimatePresence>
 
           <Button
             onClick={handleSubmit}
-            className="w-full bg-slate-900 text-white hover:bg-slate-800 rounded-full h-12 text-base font-medium mt-6"
+            className="w-full bg-slate-900 text-white hover:bg-slate-800 rounded-full h-14 text-base font-medium tracking-wide transition-all active:scale-[0.98]"
           >
             登录
           </Button>
         </motion.div>
 
-        {/* Hint */}
+        {/* 底部提示 */}
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 1 }}
-          className="text-slate-400 text-xs text-center mt-12"
+          transition={{ delay: 1.2 }}
+          className="text-slate-300 text-xs text-center mt-16 font-light tracking-wider"
         >
           此页面仅供授权访问
         </motion.p>
