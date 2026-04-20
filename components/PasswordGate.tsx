@@ -154,6 +154,16 @@ function AdminPanel({ onClose }: AdminPanelProps) {
   const [usedPasswords, setUsedPasswords] = useState<string[]>([]);
   const [copiedPassword, setCopiedPassword] = useState<string | null>(null);
 
+  // 定期刷新已使用密码列表
+  useEffect(() => {
+    if (isAuthenticated) {
+      const interval = setInterval(() => {
+        setUsedPasswords(getUsedPasswords());
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [isAuthenticated]);
+
   const handleAdminLogin = () => {
     if (adminPassword === ADMIN_PASSWORD) {
       setIsAuthenticated(true);
