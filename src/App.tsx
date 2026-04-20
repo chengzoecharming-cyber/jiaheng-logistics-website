@@ -36,6 +36,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
+import PasswordGate from "@/components/PasswordGate";
 
 const NAV_LINKS = [
   { name: "核心业务", href: "#services" },
@@ -315,6 +316,14 @@ export default function App() {
     mod: typeof MANAGEMENT_MODULES[0];
     detail: typeof MANAGEMENT_MODULES[0]['details'][0];
   } | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return sessionStorage.getItem("jh_auth_verified") === "true";
+  });
+
+  const handleLogout = () => {
+    sessionStorage.removeItem("jh_auth_verified");
+    setIsAuthenticated(false);
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -323,6 +332,10 @@ export default function App() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  if (!isAuthenticated) {
+    return <PasswordGate onSuccess={() => setIsAuthenticated(true)} />;
+  }
 
   return (
     <div className="min-h-screen bg-white text-slate-900 selection:bg-blue-100 selection:text-blue-900">
@@ -355,6 +368,9 @@ export default function App() {
             ))}
             <Button size="sm" className="rounded-full px-6" onClick={() => setWechatOpen(true)}>
               联系我们
+            </Button>
+            <Button size="sm" variant="outline" className="rounded-full px-4 border-slate-300 text-slate-600 hover:bg-slate-100" onClick={handleLogout}>
+              退出访问
             </Button>
           </div>
 
@@ -390,6 +406,9 @@ export default function App() {
               ))}
               <Button size="lg" className="w-full rounded-xl mt-4" onClick={() => setWechatOpen(true)}>
                 联系我们
+              </Button>
+              <Button size="lg" variant="outline" className="w-full rounded-xl border-slate-300 text-slate-600" onClick={() => { handleLogout(); setMobileMenuOpen(false); }}>
+                退出访问
               </Button>
             </div>
           </motion.div>
@@ -837,7 +856,7 @@ export default function App() {
               </div>
               
               <div className="flex flex-col h-full">
-                <Accordion type="single" collapsible className="w-full flex-grow flex flex-col" defaultValue="principles">
+                <Accordion type="single" collapsible className="w-full flex-grow flex flex-col" defaultValue={"principles" as any}>
                   <AccordionItem value="principles" className="border-white/10 bg-blue-600/5 rounded-[2rem] px-6 mb-6 overflow-hidden border">
                     <AccordionTrigger className="text-xl font-bold hover:no-underline flex items-center gap-2 py-6">
                       <ShieldAlert className="text-blue-500" /> 应急处置原则
