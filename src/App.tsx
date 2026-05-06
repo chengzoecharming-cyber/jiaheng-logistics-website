@@ -942,7 +942,12 @@ export default function App() {
                   </div>
                 </div>
                 <div className="flex justify-center">
-                  <div className="relative w-64 h-80 bg-white rounded-2xl shadow-2xl p-8 text-slate-900 transform rotate-3 hover:rotate-0 transition-transform duration-500">
+                  <a
+                    href="https://tqafg14sb42.feishu.cn/wiki/MMdGwmNtViwCVUkywtkcHZlBnIb?from=from_copylink"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="relative w-64 h-80 bg-white rounded-2xl shadow-2xl p-8 text-slate-900 transform rotate-3 hover:rotate-0 transition-transform duration-500 block"
+                  >
                     <div className="w-10 h-1 bg-slate-200 mb-6" />
                     <h3 className="font-display font-bold text-xl mb-4">运营流程与应急管理手册</h3>
                     <div className="space-y-3">
@@ -957,7 +962,7 @@ export default function App() {
                         <Container className="w-4 h-4" />
                       </div>
                     </div>
-                  </div>
+                  </a>
                 </div>
               </div>
               
