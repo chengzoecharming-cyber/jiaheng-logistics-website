@@ -441,18 +441,18 @@ export default function App() {
                   立即咨询 <ArrowRight className="ml-2 w-4 h-4" />
                 </Button>
                 <Button
-                  variant="outline"
+                  variant="secondary"
                   size="lg"
                   className="rounded-full px-8 h-12 text-base"
-                  render={
-                    <a
-                      href="https://tqafg14sb42.feishu.cn/wiki/MMdGwmNtViwCVUkywtkcHZlBnIb"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    />
-                  }
+                  asChild
                 >
-                  了解运营手册
+                  <a
+                    href="https://tqafg14sb42.feishu.cn/wiki/MMdGwmNtViwCVUkywtkcHZlBnIb"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    了解运营手册
+                  </a>
                 </Button>
               </div>
             </motion.div>
@@ -1157,7 +1157,7 @@ export default function App() {
             <img
               src="./iso9001.jpg"
               alt="ISO 9001 质量管理体系认证证书"
-              className="w-full max-w-[700px] rounded-2xl shadow-md object-contain bg-slate-100"
+              className="w-full max-w-[600px] max-h-[60vh] rounded-2xl shadow-md object-contain bg-slate-100"
             />
           </div>
         </DialogContent>
@@ -1176,7 +1176,7 @@ export default function App() {
             <img
               src="./tapa.jpg"
               alt="TAPA 安全认证证书"
-              className="w-full max-w-[700px] rounded-2xl shadow-md object-contain bg-slate-100"
+              className="w-full max-w-[600px] max-h-[60vh] rounded-2xl shadow-md object-contain bg-slate-100"
             />
           </div>
         </DialogContent>
