@@ -15,7 +15,8 @@ import {
   ArrowRight,
   BarChart3,
   AlertTriangle,
-  Zap
+  Zap,
+  Award
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -316,6 +317,8 @@ export default function App() {
     mod: typeof MANAGEMENT_MODULES[0];
     detail: typeof MANAGEMENT_MODULES[0]['details'][0];
   } | null>(null);
+  const [iso9001Open, setIso9001Open] = useState(false);
+  const [tapaOpen, setTapaOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     return sessionStorage.getItem("jh_auth_verified") === "true";
   });
@@ -720,16 +723,28 @@ export default function App() {
               <p className="text-slate-500 text-xl md:text-2xl max-w-3xl leading-relaxed">
                 我们深知客户对合规与质量的严苛要求。嘉亨物流提供完整的投标资料清单与现场审核接待支持。
               </p>
+              <Button 
+                variant="outline" 
+                size="lg" 
+                className="rounded-full px-10 h-14 text-lg bg-white mt-8"
+                onClick={() => setIso9001Open(true)}
+              >
+                <Award className="mr-2 w-5 h-5" /> ISO 9001 质量管理体系认证
+              </Button>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {[
                 { label: "企业基础资料", value: "营业执照、道路运输许可证、组织架构、企业简介及资质证明。" },
-                { label: "质量与安全管理", value: "质量管理体系认证、TAPA安全认证资料、驾驶员安全培训记录。" },
+                { label: "质量与安全管理", value: "质量管理体系认证、TAPA安全认证资料、驾驶员安全培训记录。", clickable: true },
                 { label: "标准化运营方案", value: "接单流程、在途跟踪机制、异常处理预案、单证归档与财务协同。" },
                 { label: "项目执行保障", value: "KPI服务承诺、车辆资源安排、应急响应资源、信息化反馈机制。" },
               ].map((item) => (
-                <div key={item.label} className="p-12 rounded-[3rem] bg-slate-50 border border-slate-100 hover:bg-white hover:shadow-xl transition-all group">
+                <div 
+                  key={item.label} 
+                  className={`p-12 rounded-[3rem] bg-slate-50 border border-slate-100 hover:bg-white hover:shadow-xl transition-all group ${item.clickable ? 'cursor-pointer' : ''}`}
+                  onClick={item.clickable ? () => setTapaOpen(true) : undefined}
+                >
                   <h4 className="text-2xl font-bold text-slate-900 mb-4 group-hover:text-blue-600 transition-colors">{item.label}</h4>
                   <p className="text-slate-500 text-lg leading-relaxed">{item.value}</p>
                 </div>
@@ -748,9 +763,6 @@ export default function App() {
                   每一项业务动作都通过标准化表单进行记录与留痕，确保管理过程的可追溯性。
                 </p>
               </div>
-              <Button variant="outline" size="lg" className="rounded-full px-10 h-14 text-lg bg-white">
-                <FileText className="mr-2 w-5 h-5" /> 下载表单样例
-              </Button>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -1128,6 +1140,44 @@ export default function App() {
                 </a>
               ))}
             </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* ISO 9001 Certificate Dialog */}
+      <Dialog open={iso9001Open} onOpenChange={setIso9001Open}>
+        <DialogContent className="sm:max-w-[800px] w-[95vw] rounded-[2.5rem] p-0 overflow-hidden border-none shadow-2xl">
+          <DialogHeader className="pt-10 pb-2 text-center">
+            <DialogTitle className="text-2xl font-display font-bold">ISO 9001 质量管理体系认证</DialogTitle>
+            <DialogDescription className="text-slate-500 px-6">
+              嘉亨物流已通过 ISO 9001 质量管理体系认证
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-center pb-10 px-6">
+            <img
+              src="./iso9001.jpg"
+              alt="ISO 9001 质量管理体系认证证书"
+              className="w-full max-w-[700px] rounded-2xl shadow-md object-contain bg-slate-100"
+            />
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* TAPA Certificate Dialog */}
+      <Dialog open={tapaOpen} onOpenChange={setTapaOpen}>
+        <DialogContent className="sm:max-w-[800px] w-[95vw] rounded-[2.5rem] p-0 overflow-hidden border-none shadow-2xl">
+          <DialogHeader className="pt-10 pb-2 text-center">
+            <DialogTitle className="text-2xl font-display font-bold">TAPA 安全认证</DialogTitle>
+            <DialogDescription className="text-slate-500 px-6">
+              嘉亨物流已通过 TAPA 安全认证
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-center pb-10 px-6">
+            <img
+              src="./tapa.jpg"
+              alt="TAPA 安全认证证书"
+              className="w-full max-w-[700px] rounded-2xl shadow-md object-contain bg-slate-100"
+            />
           </div>
         </DialogContent>
       </Dialog>
